@@ -1,0 +1,97 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="player-el">
+  <template>
+    <link rel="stylesheet" href="player-el.css">
+    <sprite-el position="{{pos}}" frame="{{f}}"></sprite-el>
+  </template>
+  <script>
+    (function () {
+      'use strict';
+
+     var playerFrames = {
+       "left1": { x:"-320", y:"-186", width:"42", height:"59", },
+       "left2": { x:"-320", y:"-304", width:"42", height:"58", },
+       "right1": { x:"-320", y:"-245", width:"42", height:"59", },
+       "right2": { x:"-320", y:"-128", width:"42", height:"58", },
+       "down0": { x:"-362", y:"-248", width:"37", height:"59", },
+       "down1": { x:"-320", y:"-362", width:"37", height:"59", },
+       "down2": { x:"-357", y:"-362", width:"37", height:"59", },
+       "up0": { x:"-384", y:"0", width:"37", height:"60", },
+       "up1": { x:"-362", y:"-188", width:"37", height:"60", },
+       "up2": { x:"-362", y:"-128", width:"37", height:"60", }
+     };
+     
+      Polymer({
+       ready: function() {
+         this.frameKey = 'down0';
+         this.f = playerFrames[this.frameKey];
+
+         this.pos = {
+           x: 40,
+           y: 50
+         }
+
+         this.timer = { t: 100 };
+       },
+
+       beginAnimation: function() {
+         // disable move in the middle of animation
+         if (this.timer.t < 100) {
+           return false;
+         }
+         
+         this.timer.t = 0;
+         return true;
+       },
+
+       move: function(direction) {
+         if (!this.beginAnimation()) return;
+
+         var dx = 0, dy=0;
+         
+         switch(direction) {
+           case "up":
+             dy= -1;
+             break;
+           case "down":
+             dy= 1;
+             break;
+           case "left":
+             dx= -1;
+             break;
+           case "right":
+             dx= 1;
+             break;
+         }
+
+         this.prevPos = {x: this.pos.x, y: this.pos.y };
+         
+         var tween = TweenLite.to(this.timer, 0.2, { t: 100, onUpdate: this.updatePlayer.bind(this, direction, dx, dy), onComplete: this.stopPlayer.bind(this, direction)});
+       },
+
+       updatePlayer: function(direction, dx, dy) {
+         var keyVal = (Math.floor(this.timer.t / 40) % 2) + 1;
+         if (direction + keyVal != this.frameKey) {
+           this.frameKey = direction + keyVal;
+           this.f = playerFrames[this.frameKey];
+         }
+
+         this.pos.x = this.prevPos.x + (dx * 64 * (this.timer.t / 100));
+         this.pos.y = this.prevPos.y + (dy * 64 * (this.timer.t / 100));
+       },
+
+       stopPlayer: function(direction) {
+         this.frameKey = this.frameKey.replace(/\d/, '');
+         if (this.frameKey === 'left' || this.frameKey === 'right') {
+           this.frameKey = 'down';
+         }
+         this.frameKey += '0';
+         
+         this.f = playerFrames[this.frameKey];
+       }
+      });
+
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,39 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="soko-ban" attributes="">
+  <template>
+    <link rel="stylesheet" href="soko-ban.css">
+    <player-el id="character"></player-el>
+  </template>
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+       ready: function() {
+
+         var inputManager = new KeyboardInputManager();
+         var char = this.$.character;
+         
+         inputManager.on('move', function(val) {
+           switch (val) {
+             case KeyboardInputManager.Direction.UP:
+               char.move('up');
+               break;
+             case KeyboardInputManager.Direction.RIGHT:
+               char.move('right');
+               break;
+             case KeyboardInputManager.Direction.DOWN:
+               char.move('down');
+               break;
+             case KeyboardInputManager.Direction.LEFT:
+               char.move('left');              
+               break;
+           }
+         });
+       }
+     });
+
+    })();
+  </script>
+</polymer-element>
