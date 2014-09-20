@@ -1,33 +1,84 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="soko-ban" attributes="">
+<polymer-element name="soko-ban">
   <template>
     <link rel="stylesheet" href="soko-ban.css">
-    <player-el id="character"></player-el>
+    <template repeat="{{box in boxes}}">
+      <box-el type="{{box.type}}" pos="{{box.position}}"></box-el>
+    </template>
+    <player-el pos="{{player.position}}" id="character"></player-el>
   </template>
   <script>
     (function () {
       'use strict';
-
+     
       Polymer({
        ready: function() {
+
+         var controller = new GameController();
+         var model = controller.getModel();
+
+         /** Sample Model **/
+         /*****
+         this.player = {
+           position: {
+             x: 0,
+             y: 0
+           }
+         };
+
+         this.boxes = [
+           {
+             type: 'W',
+             position: {
+               x: 10,
+               y: 10
+             }
+           },
+           {
+             type: 'WD',
+             position: {
+               x: 10,
+               y: 100
+             }
+           }
+         ];
+         */
+
+         this.player = {
+           position: {
+             x: model.player.position.x,
+             y: model.player.position.y
+           }
+         };
+         this.boxes = model.boxes;
 
          var inputManager = new KeyboardInputManager();
          var char = this.$.character;
          
          inputManager.on('move', function(val) {
+           if (!char.canMove()) return;
+           
            switch (val) {
              case KeyboardInputManager.Direction.UP:
-               char.move('up');
+               if (controller.move(GameController.Direction.UP)) {
+                 char.move('up');
+               }
                break;
              case KeyboardInputManager.Direction.RIGHT:
-               char.move('right');
+               if (controller.move(GameController.Direction.RIGHT)) {
+                 char.move('right');
+               }
                break;
              case KeyboardInputManager.Direction.DOWN:
-               char.move('down');
+               if (controller.move(GameController.Direction.DOWN)) {
+                 char.move('down');
+               }
                break;
              case KeyboardInputManager.Direction.LEFT:
-               char.move('left');              
+               if (controller.move(GameController.Direction.LEFT)) {
+                 char.move('left');
+               }
                break;
            }
          });

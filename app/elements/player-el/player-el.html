@@ -23,26 +23,31 @@
      };
      
       Polymer({
+       publish: {
+         pos: {
+           x: 0,
+           y: 0
+         }
+       },
        ready: function() {
          this.frameKey = 'down0';
          this.f = playerFrames[this.frameKey];
-
-         this.pos = {
-           x: 40,
-           y: 50
-         }
 
          this.timer = { t: 100 };
        },
 
        beginAnimation: function() {
          // disable move in the middle of animation
-         if (this.timer.t < 100) {
+         if (!this.canMove()) {
            return false;
          }
          
          this.timer.t = 0;
          return true;
+       },
+
+       canMove: function() {
+         return !(this.timer.t < 100);
        },
 
        move: function(direction) {
@@ -77,8 +82,8 @@
            this.f = playerFrames[this.frameKey];
          }
 
-         this.pos.x = this.prevPos.x + (dx * 64 * (this.timer.t / 100));
-         this.pos.y = this.prevPos.y + (dy * 64 * (this.timer.t / 100));
+         this.pos.x = this.prevPos.x - 0 + (dx * (this.timer.t / 100));
+         this.pos.y = this.prevPos.y - 0 + (dy * (this.timer.t / 100));
        },
 
        stopPlayer: function(direction) {

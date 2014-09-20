@@ -3,21 +3,30 @@
 <polymer-element name="box-el" attributes="">
   <template>
     <link rel="stylesheet" href="box-el.css">
-    <sprite-el style="height: {{f.height}}px; width: {{f.width}}px;" frame="{{f}}"></sprite-el>
+    <sprite-el position="{{pos}}" style="height: {{f.height}}px; width: {{f.width}}px;" frame="{{f}}"></sprite-el>
   </template>
   <script>
     (function () {
       'use strict';
 
      var boxCoords = {
-       "W": { x:"-192", y:"0", width:"64", height:"64" },
-       "WD": { x:"-128", y:"-256", width:"64", height:"64" },
-       "E": { x:"-64", y:"-384", width:"32", height:"32" }
+       "B": { x:"-192", y:"0", width:"64", height:"64" },
+       "BD": { x:"-128", y:"-256", width:"64", height:"64" },
+       "T": { x:"-64", y:"-384", width:"32", height:"32" },
+       "W": { x:"0", y:"-320", width:"64", height:"64" },
+       "G": { x:"-64", y:"-256", width:"64", height:"64" }
      };
      
       Polymer({
+       publish: {
+         pos: {
+           x: 0,
+           y: 0
+         },
+         type: 'W'
+       },
        ready: function() {
-         this.f = boxCoords['W'];
+         this.f = boxCoords[this.type];
        }
       });
 
