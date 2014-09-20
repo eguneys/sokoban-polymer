@@ -4,9 +4,9 @@
   <template>
     <link rel="stylesheet" href="soko-ban.css">
     <template repeat="{{box in boxes}}">
-      <box-el type="{{box.type}}" pos="{{box.position}}"></box-el>
+      <box-el model="{{box}}"></box-el>
     </template>
-    <player-el pos="{{player.position}}" id="character"></player-el>
+    <player-el model="{{player}}" id="character"></player-el>
   </template>
   <script>
     (function () {
@@ -45,40 +45,25 @@
          ];
          */
 
-         this.player = {
-           position: {
-             x: model.player.position.x,
-             y: model.player.position.y
-           }
-         };
+         this.player = model.player;
          this.boxes = model.boxes;
-
+         
          var inputManager = new KeyboardInputManager();
          var char = this.$.character;
          
          inputManager.on('move', function(val) {
-           if (!char.canMove()) return;
-           
            switch (val) {
              case KeyboardInputManager.Direction.UP:
-               if (controller.move(GameController.Direction.UP)) {
-                 char.move('up');
-               }
+               controller.move(GameController.Direction.UP);
                break;
              case KeyboardInputManager.Direction.RIGHT:
-               if (controller.move(GameController.Direction.RIGHT)) {
-                 char.move('right');
-               }
+               controller.move(GameController.Direction.RIGHT);
                break;
              case KeyboardInputManager.Direction.DOWN:
-               if (controller.move(GameController.Direction.DOWN)) {
-                 char.move('down');
-               }
+               controller.move(GameController.Direction.DOWN);
                break;
              case KeyboardInputManager.Direction.LEFT:
-               if (controller.move(GameController.Direction.LEFT)) {
-                 char.move('left');
-               }
+               controller.move(GameController.Direction.LEFT);
                break;
            }
          });

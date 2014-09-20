@@ -33,10 +33,13 @@ GameModel.prototype.generateMap = function() {
         '    #######' +
         '';
 
-    this.model = {};
+    this.getMapModel();
 };
 
 GameModel.prototype.getMapModel = function() {
+    if (this.model) { return this.model; }
+
+    
     var boxes = [], player;
 
     var model = this.rawModel.split('\n');
@@ -47,13 +50,14 @@ GameModel.prototype.getMapModel = function() {
             var boxType = this.mapBoxType(ch);
 
             var pos = {
-                x: col,
-                y: row
+                x: col - 0,
+                y: row - 0
             };
             
             if (boxType === GameModel.ViewTypes.PLAYER) {
                 player = {
-                    position: pos
+                    position: pos,
+                    frameKey: 'down0'
                 };
             } else {
                 boxes.push({
@@ -94,6 +98,9 @@ GameModel.prototype.mapBoxType = function(ch) {
     return boxType;
 };
 
+GameModel.prototype.getPlayer = function() {
+    return this.model.player;
+};
 
 GameModel.prototype.getPlayerPos = function() {
     return this.model.player.position;
@@ -107,7 +114,7 @@ GameModel.prototype.setPlayerPos = function(x, y) {
 
 GameModel.prototype.getBoxAt = function(x, y) {
     var box = this.model.boxes.filter(function(box) {
-        return box.position.x == x && box.position.y == y;
+        return box.position.x === x && box.position.y === y;
     });
 
     return box[0];
