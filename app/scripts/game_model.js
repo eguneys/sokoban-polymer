@@ -141,3 +141,12 @@ GameModel.prototype.removeBoxAt = function(x, y) {
 
     boxes.splice(boxes.indexOf(box), 1);
 };
+
+GameModel.prototype.swapBoxes = function(box, box2) {
+    var boxPos = { x: box.position.x, y: box.position.y };
+
+    box.position.x = box2.position.x;
+    box.position.y = box2.position.y;
+
+    box2.position = boxPos;
+};

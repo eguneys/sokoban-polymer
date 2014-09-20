@@ -45,18 +45,27 @@ GameController.prototype.move = function(dir) {
         canMove = true;
         break;
     case GameModel.ViewTypes.BOX:
-        canMove = false;
+        canMove = this.moveBox(toBox, delta);
         break;        
     }
 
     if (canMove) {
         this.playerController.move(this.directionString(dir));
-        
-        this.model.removeBoxAt(next.x, next.y);
-        this.model.setBoxAt(current.x, current.y, GameModel.ViewTypes.EMPTY);
     }
 
     return canMove;
+};
+
+GameController.prototype.moveBox = function(box, delta) {
+    var nextPos = { x: box.position.x + delta.x, y: box.position.y + delta.y };
+
+    var nextBox = this.model.getBoxAt(nextPos.x, nextPos.y);
+
+    if (nextBox.type ===  GameModel.ViewTypes.EMPTY) {
+        this.model.swapBoxes(box, nextBox);
+        return true;
+    }
+    return false;
 };
 
 GameController.prototype.getDeltas = function(dir) {
