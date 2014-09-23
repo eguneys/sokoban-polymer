@@ -15,9 +15,7 @@
       Polymer({
        ready: function() {
 
-         var controller = new GameController();
-         var model = controller.getModel();
-
+         this.refresh();
          /** Sample Model **/
          /*****
          this.player = {
@@ -44,14 +42,13 @@
            }
          ];
          */
-
-         this.player = model.player;
-         this.boxes = model.boxes;
-         
          var inputManager = new KeyboardInputManager();
          var char = this.$.character;
          
          inputManager.on('move', function(val) {
+           var controller = this.controller;
+           var model = this.model;
+
            switch (val) {
              case KeyboardInputManager.Direction.UP:
                controller.move(GameController.Direction.UP);
@@ -66,7 +63,19 @@
                controller.move(GameController.Direction.LEFT);
                break;
            }
-         });
+
+           if (controller.isGameOver()) {
+             this.fire('finished', { target: model.target });
+           }
+         }.bind(this));
+       },
+
+       refresh: function() {
+         this.controller = new GameController();
+         this.model = this.controller.getModel();
+         
+         this.player = this.model.player;
+         this.boxes = this.model.boxes;
        }
      });
 

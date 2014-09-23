@@ -15,6 +15,7 @@ GameModel.ViewTypes = {
     WALL: 'W',
     TARGET: 'T',
     BOX: 'B',
+    BOXDARK: 'BD',
     PLAYER: 'P'
 };
 
@@ -39,6 +40,7 @@ GameModel.prototype.generateMap = function() {
 GameModel.prototype.getMapModel = function() {
     if (this.model) { return this.model; }
 
+    var target = 0;
     
     var boxes = [], player;
 
@@ -60,6 +62,9 @@ GameModel.prototype.getMapModel = function() {
                     frameKey: 'down0'
                 };
             } else {
+                if (boxType === GameModel.ViewTypes.BOX) {
+                    target++;
+                };
                 boxes.push({
                     type: boxType,
                     position: pos
@@ -69,7 +74,8 @@ GameModel.prototype.getMapModel = function() {
     }, this);
     this.model = {
         player: player,
-        boxes: boxes
+        boxes: boxes,
+        target: target
     };
 
     return this.model;
@@ -96,6 +102,10 @@ GameModel.prototype.mapBoxType = function(ch) {
     }
 
     return boxType;
+};
+
+GameModel.prototype.getTarget = function() {
+    return this.model.target;
 };
 
 GameModel.prototype.getPlayer = function() {

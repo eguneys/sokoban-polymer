@@ -7,6 +7,9 @@ function GameController() {
     this.model.generateMap();
 
     this.playerController = new PlayerController(this.model.getPlayer());
+
+    // tracks the boxes on target.
+    this.currentDone = 0;
 }
 
 GameController.Direction = {
@@ -45,6 +48,7 @@ GameController.prototype.move = function(dir) {
         canMove = true;
         break;
     case GameModel.ViewTypes.BOX:
+    case GameModel.ViewTypes.BOXDARK:
         canMove = this.moveBox(toBox, delta);
         break;        
     }
@@ -62,10 +66,36 @@ GameController.prototype.moveBox = function(box, delta) {
     var nextBox = this.model.getBoxAt(nextPos.x, nextPos.y);
 
     if (nextBox.type ===  GameModel.ViewTypes.EMPTY) {
-        this.model.swapBoxes(box, nextBox);
+
+        if (box.type === GameModel.ViewTypes.BOXDARK) {
+            this.currentDone--;
+        }
+        
+        nextBox.bgType = GameModel.ViewTypes.EMPTY;
+        nextBox.type = GameModel.ViewTypes.BOX;
+
+        box.type = box.bgType || GameModel.ViewTypes.EMPTY;
+
+        return true;
+    } else if (nextBox.type === GameModel.ViewTypes.TARGET) {
+        // TODO ugly hack
+
+        if (box.type === GameModel.ViewTypes.BOX) {
+            this.currentDone++;
+        }
+        
+        nextBox.bgType = GameModel.ViewTypes.TARGET;
+        nextBox.type = GameModel.ViewTypes.BOXDARK;
+
+        box.type = box.bgType || GameModel.ViewTypes.EMPTY;
+        
         return true;
     }
     return false;
+};
+
+GameController.prototype.isGameOver = function() {
+    return this.currentDone === this.model.getTarget();
 };
 
 GameController.prototype.getDeltas = function(dir) {
